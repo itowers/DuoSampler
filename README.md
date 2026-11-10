@@ -10,7 +10,8 @@ Sampler e beat maker para o iPhone Duo (PWA, Web Audio, um único `index.html`).
 - Biblioteca sintetizada: 12 kits de bateria e 48 sons em 6 categorias.
 - Acordes: 7 graus do tom, joystick de 8 variações que trava, strum, arp (divisão, ordem, alcance), inversão e oitava.
 - Sampler: microfone ou arquivo; cortar, reverso, fatiar em grade ou por ataques.
-- Sequencer de 16 passos com swing.
+- PASSOS: escrita por passos no mesmo loop que o REC ao vivo grava (uma só camada de dados, como os padrões por grupo do EP-133 K.O. II), com páginas por compasso e swing.
+- Abas por contexto: em DRUM aparecem SAMPLE e KIT; em KEYS/CHORD aparece SOM.
 - Latência de gravação calibrável (CFG › CALIBRAR).
 - Projeto e samples salvos no aparelho (IndexedDB); exportar/importar backup `.json`.
 

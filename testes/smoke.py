@@ -20,10 +20,12 @@ async def main():
         out['contagem']=await pg.inner_text('#aRec')
         await tap('#p0'); await pg.wait_for_timeout(2400)   # durante a contagem: não grava
         for s in ['#p0','#p1','#p4','#p12']: await tap(s); await pg.wait_for_timeout(160)
-        for t in ['SEQ','SAMPLE','SOUND','FX','MIX','CFG','LOOPS']:
+        for t in ['SEQ','SAMPLE','SOUND','FX','MIX','CFG','LOOPS']:  # modo DRUM: SOUND é a aba KIT
             await pg.click(f'#tabs [data-t={t}]'); await pg.wait_for_timeout(100)
-            if t=='SEQ': await pg.click('#st3'); await pg.click('[data-act=knext]')
+            if t=='SEQ': await pg.click('#st3'); await pg.click('#st5'); await pg.click('#st5'); await pg.click('[data-act=pgnext]')
             if t=='SOUND':
+                for k in range(12): await pg.locator('#kgrid .b').nth(k).click()
+            if t=='SOUND_SYNTH':
                 for c in range(6):
                     await pg.click(f'#ct{c}'); 
                     for k in range(8): await pg.locator('#pgrid .b').nth(k).click()
@@ -33,10 +35,17 @@ async def main():
                 for k in range(n):
                     bx=await pg.locator('#view .bar').nth(k).bounding_box(); await pg.mouse.click(bx['x']+bx['width']*0.6,bx['y']+bx['height']/2)
         await tap('#modes [data-m=KEYS]'); await tap('#pads .pad >> nth=5',200)
-        await tap('#modes [data-m=CHORD]'); await tap('#pads .pad >> nth=5',300)
+        out['abas_keys']=await pg.inner_text('#tabs')
+        await pg.click('#tabs [data-t=SOUND]')
+        for c in range(6):
+            await pg.click(f'#ct{c}')
+            for k in range(8): await pg.locator('#pgrid .b').nth(k).click()
+        for a in ['adiv','aord','arng']: await pg.click(f'[data-act={a}]')
+        await pg.click('#tabs [data-t=SEQ]'); await pg.click('#st8')
+        await tap('#modes [data-m=CHORD]'); await tap('#pads .pad >> nth=6',300); await pg.click('#st10')
         bx=await pg.locator('#xy').bounding_box(); await pg.mouse.click(bx['x']+bx['width']*0.5,bx['y']+bx['height']*0.1)
-        await tap('#fArp'); await tap('#pads .pad >> nth=0',700); await tap('#fArp'); await tap('#fStr'); await tap('#pads .pad >> nth=3',300); await tap('#pads .pad >> nth=7',200)
-        out['acorde7']=await pg.locator('#pads .pad').nth(0).inner_text()
+        await tap('#fArp'); await tap('#pads .pad >> nth=1',700); await tap('#fArp'); await tap('#fStr'); await tap('#pads .pad >> nth=4',300); await tap('#pads .pad >> nth=0',200)
+        out['acorde7']=await pg.locator('#pads .pad').nth(1).inner_text()
         await tap('#lp1'); await tap('#pads .pad >> nth=2',300)
         await tap('#modes [data-m=FX]')
         for k in range(16): await tap(f'#pads .pad >> nth={k}',260)
@@ -55,7 +64,7 @@ async def main():
         await pg.click('[data-act=novo]'); await pg.click('[data-act=novo]'); await pg.click('[data-act=bpml]')
         await tap('#aRec'); await tap('#p0'); await pg.wait_for_timeout(480); await tap('#p1'); await pg.wait_for_timeout(480); await tap('#p0'); await pg.wait_for_timeout(480); await tap('#p1'); await pg.wait_for_timeout(400); await tap('#aRec')
         await pg.wait_for_timeout(1200); out['bpm_loop']=await pg.inner_text('#cBpm'); out['bpm_loop_eventos']=await ev()
-        await pg.click('#tabs [data-t=SOUND]'); await tap('#modes [data-m=CHORD]'); await pg.screenshot(path='/tmp/s2.png')
+        await tap('#modes [data-m=CHORD]'); await pg.click('#tabs [data-t=SEQ]'); await pg.screenshot(path='/tmp/s2.png'); await tap('#modes [data-m=DRUM]'); await pg.click('#tabs [data-t=SOUND]'); await pg.screenshot(path='/tmp/s5.png')
         await pg.set_viewport_size({'width':390,'height':780}); await pg.wait_for_timeout(200); await pg.click('#tabs [data-t=LOOPS]'); await pg.screenshot(path='/tmp/s3.png')
         await pg.click('#tabs [data-t=FX]'); await pg.screenshot(path='/tmp/s4.png')
         for k,v in out.items(): print(k,'=',repr(v))
